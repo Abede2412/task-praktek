@@ -72,9 +72,9 @@ public class EmployeeService {
         ResultSet resultSet = preparedStatement.executeQuery();
 
         while(resultSet.next()){
-            Integer num = resultSet.getInt(1);
+            Integer number = resultSet.getInt(1);
             Integer factorial = resultSet.getInt(2);
-            result.put(num, factorial);
+            result.put(number, factorial);
         }
         return result;
     }
