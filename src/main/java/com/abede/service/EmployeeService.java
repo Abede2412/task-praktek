@@ -3,7 +3,6 @@ package com.abede.service;
 import com.abede.model.Employee;
 
 import javax.enterprise.context.ApplicationScoped;
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,12 +13,9 @@ import java.util.Map;
 @ApplicationScoped
 public class EmployeeService {
 
-    private Connection connection = null;
-
     public Connection getConnection(){
         try{
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres","postgres","031214");
-            return connection;
+            return DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "031214");
         } catch (SQLException e){
             e.printStackTrace();
             return null;
@@ -44,6 +40,7 @@ public class EmployeeService {
         PreparedStatement preparedStatement = getConnection().prepareStatement(query);
         preparedStatement.setInt(1, id);
         ResultSet rs = preparedStatement.executeQuery();
+
         Integer sumScore = 0;
         while (rs.next()){
             Employee employee = new Employee();
@@ -57,7 +54,6 @@ public class EmployeeService {
         result.put("employee dengan manager_id "+id, employees);
         Double avgScore = sumScore.doubleValue()/employees.size();
         result.put("Avg Score", avgScore);
-
         return result;
     }
 
@@ -65,11 +61,18 @@ public class EmployeeService {
 
         Map<Integer, Integer> result = new HashMap<>();
 
-        String query = "with recursive n_factorial(n, factorial) as (select 0 as n, 1 as factorial union select n+1, factorial * (n+1) from n_factorial)select * from n_factorial limit ?";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(query);
+        String query = "with recursive n_factorial(n, factorial)" +
+                " as (select 0 as n, 1 as factorial" +
+                " union " +
+                "select n+1, factorial * (n+1) " +
+                "from n_factorial)" +
+                "select * from n_factorial limit ?";
 
+
+        PreparedStatement preparedStatement = getConnection().prepareStatement(query);
         preparedStatement.setInt(1, n+1);
         ResultSet resultSet = preparedStatement.executeQuery();
+
 
         while(resultSet.next()){
             Integer number = resultSet.getInt(1);
